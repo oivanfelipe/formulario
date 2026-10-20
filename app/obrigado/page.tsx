@@ -1,6 +1,7 @@
 export default function Obrigado() {
   return (
     <main className="wrap">
+      <p className="eyebrow">Dados financeiros</p>
       <div className="card center">
         <div className="check">✓</div>
         <h1>Recebemos suas respostas</h1>

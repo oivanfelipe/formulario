@@ -34,6 +34,14 @@ const PCT_QUESTIONS: { name: (typeof PCT_FIELDS)[number]; n: number; label: stri
   },
 ];
 
+const SHORT: Record<(typeof PCT_FIELDS)[number], string> = {
+  pct_custo_produto: "Custo do produto ou serviço",
+  pct_impostos: "Impostos",
+  pct_comissao: "Comissões",
+  pct_taxas_pagamento: "Taxas de pagamento",
+  pct_frete: "Frete e entrega",
+};
+
 const STEPS = ["Identificação", "Faturamento e custos", "Outros custos", "Revisão"];
 const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -126,12 +134,12 @@ export default function Page() {
   return (
     <main className="wrap">
       <header>
-        <p className="eyebrow">Dados financeiros · {STEPS[step]}</p>
+        <p className="eyebrow">0{step + 1} {STEPS[step]}</p>
         <div className="bar" aria-hidden>
           <div style={{ width: `${progress}%` }} />
         </div>
         <p className="muted small">
-          Passo {step + 1} de {STEPS.length} · leva cerca de 3 minutos. Valores aproximados já ajudam.
+          Passo {step + 1} de {STEPS.length}. Leva cerca de 3 minutos e valores aproximados já ajudam.
         </p>
       </header>
 
@@ -201,9 +209,9 @@ export default function Page() {
             <h1>Revise e envie</h1>
             <div className="summary">
               <Row k="Cliente" v={f.cliente_nome} />
-              <Row k="Faturamento 2025" v={fat !== null ? brl(fat) : "—"} />
+              <Row k="Faturamento 2025" v={fat !== null ? brl(fat) : "Não informado"} />
               {PCT_QUESTIONS.map((q) => (
-                <Row key={q.name} k={q.label.replace(/^Em média, qual percentual (do valor de uma venda|das vendas) (é )?/, "").replace(/\?$/, "")} v={`${pct(q.name) ?? 0}%`} small />
+                <Row key={q.name} k={SHORT[q.name]} v={`${pct(q.name) ?? 0}%`} small />
               ))}
               {f.tem_outro_custo === "sim" && <Row k={f.descricao_outro_custo || "Outro custo variável"} v={`${outro}%`} />}
               <div className="margin">
@@ -213,7 +221,7 @@ export default function Page() {
               </div>
             </div>
 
-            <h2>Ajuda a refinar o ROI <span className="muted">(opcional)</span></h2>
+            <h2>Ajuda a refinar o ROI <span className="tag">// OPCIONAL</span></h2>
             <Field label="Quanto a empresa investiu em marketing e vendas em 2025?" hint="Mídia paga, agência, ferramentas, equipe comercial.">
               <div className="affix"><span>R$</span><input inputMode="decimal" placeholder="0,00" value={f.investimento_marketing_2025 ?? ""} onChange={(e) => set("investimento_marketing_2025", e.target.value)} /></div>
             </Field>
@@ -271,7 +279,7 @@ function Row({ k, v, small }: { k: string; v?: string; small?: boolean }) {
   return (
     <div className={small ? "row small" : "row"}>
       <span>{k}</span>
-      <b>{v || "—"}</b>
+      <b>{v || "Não informado"}</b>
     </div>
   );
 }
