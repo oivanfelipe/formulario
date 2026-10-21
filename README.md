@@ -18,3 +18,5 @@ RLS ligado: a chave publishable só pode INSERIR em `respostas_financeiras` (pol
 
 ## Diagnóstico comercial (GSC)
 Segundo formulário, em `/gsc`: 33 perguntas abertas em 7 blocos, específicas do cliente GSC. Grava em `respostas_gsc` (migration `003_respostas_gsc.sql`, precisa ser aplicada no Supabase). As perguntas ficam em `lib/gsc-questions.ts`; as respostas são salvas como JSON `{ "q01": "...", ... }`. O rascunho fica no navegador até o envio.
+
+Para um deploy dedicado ao /gsc, defina `ROOT_REDIRECT=/gsc` nas variáveis da Vercel: a raiz `/` passa a redirecionar para o formulário. Sem a variável, `/` continua sendo o formulário de ROI.
