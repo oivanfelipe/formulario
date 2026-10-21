@@ -57,3 +57,5 @@ button { font: inherit; }
 .margin strong { font: 700 36px var(--font-oswald), sans-serif; color: var(--ink); } .margin strong.neg { color: var(--red); }
 .margin small { color: var(--muted); }
 .check { width: 56px; height: 56px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 28px; margin: 0 auto 16px; }
+textarea { min-height: 112px; resize: vertical; line-height: 1.45; }
+.lead { margin: -8px 0 24px; }

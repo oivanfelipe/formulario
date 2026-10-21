@@ -15,3 +15,6 @@ Importe o repositório e cadastre as mesmas variáveis em Settings → Environme
 
 ## Segurança
 RLS ligado: a chave publishable só pode INSERIR em `respostas_financeiras` (policy `form_insert_only`); ninguém consegue ler as respostas com ela. Se `SUPABASE_SERVICE_ROLE_KEY` for definida, ela é usada no lugar (nunca no navegador).
+
+## Diagnóstico comercial (GSC)
+Segundo formulário, em `/gsc`: 33 perguntas abertas em 7 blocos, específicas do cliente GSC. Grava em `respostas_gsc` (migration `003_respostas_gsc.sql`, precisa ser aplicada no Supabase). As perguntas ficam em `lib/gsc-questions.ts`; as respostas são salvas como JSON `{ "q01": "...", ... }`. O rascunho fica no navegador até o envio.
