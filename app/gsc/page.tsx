@@ -6,8 +6,8 @@ import { GSC_MAX_ANSWER, GSC_SECTIONS } from "@/lib/gsc-questions";
 const STEPS = ["Identificação", ...GSC_SECTIONS.map((s) => s.title)];
 const DRAFT_KEY = "gsc-diagnostico-v1";
 
-type Draft = { nome: string; cargo: string; email: string; website: string; respostas: Record<string, string> };
-const EMPTY: Draft = { nome: "", cargo: "", email: "", website: "", respostas: {} };
+type Draft = { nome: string; cargo: string; email: string; respostas: Record<string, string> };
+const EMPTY: Draft = { nome: "", cargo: "", email: "", respostas: {} };
 
 export default function Page() {
   const [step, setStep] = useState(0);
@@ -68,7 +68,6 @@ export default function Page() {
           cargo: d.cargo,
           email: d.email,
           respostas: d.respostas,
-          website: d.website, // honeypot
         }),
       });
       const j = await r.json().catch(() => ({}));
@@ -118,8 +117,6 @@ export default function Page() {
               <span className="hint">Opcional. Usaremos só se precisarmos tirar uma dúvida.</span>
               <input type="email" value={d.email} onChange={(e) => setD({ ...d, email: e.target.value })} autoComplete="email" />
             </label>
-            {/* honeypot */}
-            <input className="hp" tabIndex={-1} autoComplete="off" aria-hidden value={d.website} onChange={(e) => setD({ ...d, website: e.target.value })} />
           </>
         )}
 
