@@ -18,9 +18,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Requisição inválida." }, { status: 400 });
   }
 
-  // honeypot anti-bot: campo escondido que humanos não preenchem
-  if ((body as any)?.website) return NextResponse.json({ ok: true });
-
   const result = validate(body);
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 });
 

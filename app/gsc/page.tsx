@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GSC_MAX_ANSWER, GSC_SECTIONS } from "@/lib/gsc-questions";
+import AudioButton from "./audio-button";
 
 const STEPS = ["Identificação", ...GSC_SECTIONS.map((s) => s.title)];
 const DRAFT_KEY = "gsc-diagnostico-v1";
@@ -15,6 +16,7 @@ export default function Page() {
   const [err, setErr] = useState("");
   const [sending, setSending] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [audioId, setAudioId] = useState<string | null>(null); // pergunta com áudio em andamento
 
   // questionário longo: recupera o rascunho se a pessoa fechar a página no meio
   useEffect(() => {
@@ -32,6 +34,12 @@ export default function Page() {
   }, [d, loaded]);
 
   const setAnswer = (id: string, v: string) => setD((p) => ({ ...p, respostas: { ...p.respostas, [id]: v } }));
+  const addText = (id: string, text: string) =>
+    setD((p) => {
+      const cur = (p.respostas[id] ?? "").trimEnd();
+      const next = (cur ? `${cur} ${text}` : text).slice(0, GSC_MAX_ANSWER);
+      return { ...p, respostas: { ...p.respostas, [id]: next } };
+    });
   const last = step === STEPS.length - 1;
   const section = step > 0 ? GSC_SECTIONS[step - 1] : null;
 
@@ -102,7 +110,7 @@ export default function Page() {
           <>
             <h1>Diagnóstico comercial</h1>
             <p className="muted lead">
-              Estas perguntas ajudam a entender como o comercial funciona hoje, para montar o treinamento e os materiais sob medida para a equipe. Suas respostas são salvas neste aparelho enquanto você preenche.
+              Estas perguntas ajudam a entender como o comercial funciona hoje, para montar o treinamento e os materiais sob medida para a equipe. Suas respostas são salvas neste aparelho enquanto você preenche. Em cada pergunta você pode digitar ou usar o botão “Responder por áudio”: fale à vontade, o texto aparece no campo e pode ser editado.
             </p>
             <label className="field">
               <span className="q">Seu nome *</span>
@@ -124,15 +132,21 @@ export default function Page() {
           <>
             <h1>{section.title}</h1>
             {section.questions.map((q) => (
-              <label className="field" key={q.id}>
-                <span className="q">{q.n}. {q.label}</span>
+              <div className="field" key={q.id}>
+                <label className="q" htmlFor={q.id}>{q.n}. {q.label}</label>
                 <textarea
+                  id={q.id}
                   rows={4}
                   maxLength={GSC_MAX_ANSWER}
                   value={d.respostas[q.id] ?? ""}
                   onChange={(e) => setAnswer(q.id, e.target.value)}
                 />
-              </label>
+                <AudioButton
+                  disabled={audioId !== null && audioId !== q.id}
+                  onBusy={(b) => setAudioId(b ? q.id : null)}
+                  onText={(t) => addText(q.id, t)}
+                />
+              </div>
             ))}
             {last && <p className="hint">{answered} de {total} perguntas respondidas. Dá para voltar e completar antes de enviar.</p>}
           </>
@@ -141,11 +155,11 @@ export default function Page() {
         {err && <p className="error" role="alert">{err}</p>}
 
         <div className="nav">
-          {step > 0 ? <button type="button" className="ghost" onClick={() => go(step - 1)}>Voltar</button> : <span />}
+          {step > 0 ? <button type="button" className="ghost" disabled={audioId !== null} onClick={() => go(step - 1)}>Voltar</button> : <span />}
           {!last ? (
-            <button type="button" className="primary" onClick={next}>Continuar</button>
+            <button type="button" className="primary" disabled={audioId !== null} onClick={next}>Continuar</button>
           ) : (
-            <button type="button" className="primary" disabled={sending} onClick={submit}>{sending ? "Enviando…" : "Enviar respostas"}</button>
+            <button type="button" className="primary" disabled={sending || audioId !== null} onClick={submit}>{sending ? "Enviando…" : "Enviar respostas"}</button>
           )}
         </div>
       </div>
