@@ -112,7 +112,6 @@ export default function Page() {
       ticket_medio: optNum("ticket_medio"),
       qtd_vendas_2025: optNum("qtd_vendas_2025"),
       observacoes: f.observacoes,
-      website: f.website, // honeypot
     };
     try {
       const r = await fetch("/api/respostas", {
@@ -156,8 +155,6 @@ export default function Page() {
             <Field label="E-mail para contato" hint="Opcional. Usaremos só se precisarmos tirar uma dúvida.">
               <input type="email" value={f.email ?? ""} onChange={(e) => set("email", e.target.value)} autoComplete="email" />
             </Field>
-            {/* honeypot */}
-            <input className="hp" tabIndex={-1} autoComplete="off" aria-hidden value={f.website ?? ""} onChange={(e) => set("website", e.target.value)} />
           </>
         )}
 
